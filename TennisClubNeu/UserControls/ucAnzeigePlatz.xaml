@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="TennisclubNeu.AnzeigePlatz"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TennisclubNeu"
+             mc:Ignorable="d" >
+    <!--d:DesignHeight="450" d:DesignWidth="285">-->
+    <Button x:Name="BtnBuchen" Click="BtnBuchen_Click">
+    <Grid x:Name="grdMain">
+        <Image x:Name="ucAnzeigePlatzBackgroundImage" Source="/Images/Free.png" Stretch="UniformToFill"/>
+        <Label x:Name="Platznummer" Content="1" FontSize="35" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="55" Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,5" />
+        <Label x:Name="Uhrzeit" Content="Frei" FontSize="30" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Width="150" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="68,360,5,5" />
+
+        <Label x:Name="Titel" Content="" FontSize="20" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,105,5,5" />
+        <Label x:Name="Zeile1" Content="" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,145,5,5" />
+        <Label x:Name="Zeile2" Content="" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,185,5,5" />
+        <Label x:Name="Zeile3" Content="" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,225,5,5" />
+        <Label x:Name="Zeile4" Content="" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,265,5,5" />
+        <Label x:Name="Zeile5" Content="" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="41,305,5,5" />
+    </Grid>
+    </Button>
+</UserControl>

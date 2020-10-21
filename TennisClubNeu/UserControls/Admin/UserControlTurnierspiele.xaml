@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="TennisClubNeu.UserControls.Admin.UserControlTurnierspiele"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TennisClubNeu.UserControls.Admin"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024">
+    <Grid x:Name="grdMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="450*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="457*"/>
+            <ColumnDefinition Width="136*"/>
+            <ColumnDefinition Width="234*"/>
+            <ColumnDefinition Width="183*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.CommandBindings>
+            <!-- Speichern -->
+            <CommandBinding Command="ApplicationCommands.Save" CanExecute="BtnSpeichern_CanExecute" Executed="BtnSpeichern_Executed" />
+
+        </Grid.CommandBindings>
+        <TextBox x:Name="tbGuid" Visibility="Hidden"/>
+        <ComboBox x:Name="cboStundenStart" SelectionChanged="GrdMain_Changed" HorizontalAlignment="Left" Grid.Row="1" Grid.RowSpan="2" Width="50" FontSize="20" Grid.Column="2" Margin="5,5,0,5" />
+        <Label Content=":" FontSize="20" FontWeight="Bold" Width="20" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" Margin="53,5,0,0" Grid.RowSpan="2"/>
+        <DatePicker x:Name="dpStart" SelectedDateChanged="GrdMain_Changed" FontSize="20" FontWeight="Bold" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="6" Grid.Column="1" Margin="5,5,5,5" BorderThickness="0" Grid.RowSpan="2"  Width="150"/>
+        <ComboBox x:Name="cboMinutenStart" SelectionChanged="GrdMain_Changed" HorizontalAlignment="Left" Grid.Row="1" Grid.RowSpan="2" Width="50" FontSize="20" Grid.Column="2" Margin="68,5,0,5" />
+
+        <ComboBox x:Name="cboStundenEnde" SelectionChanged="GrdMain_Changed" HorizontalAlignment="Left"  Grid.Row="4" Grid.RowSpan="2" Width="50" FontSize="20" Grid.Column="2" Margin="5,5,0,5" />
+        <Label Content=":" FontSize="20" FontWeight="Bold" Width="20" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="4" Grid.Column="2" Margin="53,5,0,0" Grid.RowSpan="2"/>
+        <ComboBox x:Name="cboMinutenEnde" SelectionChanged="GrdMain_Changed" HorizontalAlignment="Left" Grid.Row="4" Grid.RowSpan="2" Width="50" FontSize="20" Grid.Column="2" Margin="68,5,0,5" />
+
+        <Label Content="Titel" Width="35" FontSize="10" FontWeight="Bold" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Grid.Column="3" Margin="0,5,0,0" Grid.RowSpan="2" />
+        <TextBox  x:Name="txtTitel" TextChanged="GrdMain_Changed" FontSize="12" MaxLength="20" Width="150" FontWeight="Bold" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Grid.Column="3" Margin="50,5,0,0"/>
+
+        <Label Content="Infos" Width="35" FontSize="10" FontWeight="Bold" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Margin="0,5,0,0" Grid.RowSpan="2" />
+
+        <TextBox x:Name="tbZeile1" FontSize="12" MaxLength="20" Width="150" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Grid.Column="3" Margin="50,5,0,0"/>
+        <TextBox x:Name="tbZeile2" FontSize="12" MaxLength="20" Width="150" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Grid.Column="3" Margin="50,5,0,0"/>
+        <TextBox x:Name="tbZeile3" FontSize="12" MaxLength="20" Width="150" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="3" Grid.Column="3" Margin="50,5,0,0"/>
+        <TextBox x:Name="tbZeile4" FontSize="12" MaxLength="20" Width="150" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="4" Grid.Column="3" Margin="50,5,0,0"/>
+        <TextBox x:Name="tbZeile5" FontSize="12" MaxLength="20" Width="150" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="5" Grid.Column="3" Margin="50,5,0,0"/>
+
+        <Button Command="ApplicationCommands.Save" x:Name="btnSpeichern" Grid.RowSpan="2" Width="90" Height="30" Content="Check Termine" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Left" Margin="0,6" Click="BtnSpeichern_Click" />
+        <TextBlock Background="White" Grid.Row="2" Grid.Column="4" Grid.RowSpan="5" TextWrapping="Wrap" x:Name="tblWarnings" />
+
+        <DataGrid x:Name="dataGrid" AutoGeneratingColumn="dataGrid_AutoGeneratingColumn" MouseDoubleClick="DataGrid_MouseDoubleClick"  Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="7" Margin="10,10,10,10" IsReadOnly="True" />
+    </Grid>
+</UserControl>

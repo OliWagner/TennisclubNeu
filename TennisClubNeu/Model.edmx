@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TennisclubNeuModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Buchungen">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlatzId" Type="int" Nullable="false" />
+          <Property Name="Startzeit" Type="datetime" Nullable="false" />
+          <Property Name="Endzeit" Type="datetime" Nullable="false" />
+          <Property Name="Spieler1Id" Type="int" />
+          <Property Name="Spieler2Id" Type="int" />
+          <Property Name="Spieler3Id" Type="int" />
+          <Property Name="Spieler4Id" Type="int" />
+          <Property Name="Titel" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Zeile1" Type="varchar" MaxLength="20" />
+          <Property Name="Zeile2" Type="varchar" MaxLength="20" />
+          <Property Name="Zeile3" Type="varchar" MaxLength="20" />
+          <Property Name="Zeile4" Type="varchar" MaxLength="20" />
+          <Property Name="Zeile5" Type="varchar" MaxLength="20" />
+          <Property Name="FesteBuchungGuid" Type="varchar" MaxLength="36" />
+          <Property Name="TurnierspielGuid" Type="varchar" MaxLength="36" />
+        </EntityType>
+        <EntityType Name="GridInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlatzId" Type="int" Nullable="false" />
+          <Property Name="Rows" Type="int" Nullable="false" />
+          <Property Name="Columns" Type="int" Nullable="false" />
+          <Property Name="SpaceColumnWidth" Type="int" Nullable="false" />
+          <Property Name="SpaceRowHeight" Type="int" Nullable="false" />
+          <Property Name="ContentColumnWidth" Type="int" Nullable="false" />
+          <Property Name="ContentRowHeight" Type="int" Nullable="false" />
+          <Property Name="PositionsRow" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PositionsColumn" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Plätze">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Platznummer" Type="int" Nullable="false" />
+          <Property Name="Bezeichnung" Type="nvarchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="PlatzInBearbeitung">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlatzId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Platzsperre">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PlatzId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Spieler">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nachname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Vorname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ChipId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IstGebucht" Type="bit" Nullable="false" />
+          <Property Name="IstAdminTurniere" Type="bit" Nullable="false" />
+          <Property Name="IstAdminPlatzsperre" Type="bit" Nullable="false" />
+          <Property Name="IstAdminFesteBuchungen" Type="bit" Nullable="false" />
+          <Property Name="IstAdminBuchungen" Type="bit" Nullable="false" />
+          <Property Name="IstAdminSpieler" Type="bit" Nullable="false" />
+          <Property Name="IstAdminRechte" Type="bit" Nullable="false" />
+          <Property Name="IstAktiv" Type="bit" />
+        </EntityType>
+        <EntityType Name="SpielerInBearbeitung">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SpielerId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="TennisclubNeuModelStoreContainer">
+          <EntitySet Name="Buchungen" EntityType="Self.Buchungen" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GridInfo" EntityType="Self.GridInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Plätze" EntityType="Self.Plätze" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlatzInBearbeitung" EntityType="Self.PlatzInBearbeitung" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Platzsperre" EntityType="Self.Platzsperre" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Spieler" EntityType="Self.Spieler" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SpielerInBearbeitung" EntityType="Self.SpielerInBearbeitung" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TennisclubNeuModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Buchungen">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlatzId" Type="Int32" Nullable="false" />
+          <Property Name="Startzeit" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Endzeit" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Spieler1Id" Type="Int32" />
+          <Property Name="Spieler2Id" Type="Int32" />
+          <Property Name="Spieler3Id" Type="Int32" />
+          <Property Name="Spieler4Id" Type="Int32" />
+          <Property Name="Titel" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Zeile1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Zeile2" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Zeile3" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Zeile4" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Zeile5" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FesteBuchungGuid" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="TurnierspielGuid" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Plätze">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Platznummer" Type="Int32" Nullable="false" />
+          <Property Name="Bezeichnung" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PlatzInBearbeitung">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlatzId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Platzsperre">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlatzId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Spieler">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nachname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Vorname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ChipId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IstGebucht" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminTurniere" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminPlatzsperre" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminFesteBuchungen" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminBuchungen" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminSpieler" Type="Boolean" Nullable="false" />
+          <Property Name="IstAdminRechte" Type="Boolean" Nullable="false" />
+          <Property Name="IstAktiv" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="SpielerInBearbeitung">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SpielerId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="TennisclubNeuEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Buchungen" EntityType="Self.Buchungen" />
+          <EntitySet Name="Plätze" EntityType="Self.Plätze" />
+          <EntitySet Name="PlatzInBearbeitung" EntityType="Self.PlatzInBearbeitung" />
+          <EntitySet Name="Platzsperre" EntityType="Self.Platzsperre" />
+          <EntitySet Name="Spieler" EntityType="Self.Spieler" />
+          <EntitySet Name="SpielerInBearbeitung" EntityType="Self.SpielerInBearbeitung" />
+          <EntitySet Name="GridInfo" EntityType="TennisclubNeuModel.GridInfo" />
+        </EntityContainer>
+        <EntityType Name="GridInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PlatzId" Type="Int32" Nullable="false" />
+          <Property Name="Rows" Type="Int32" Nullable="false" />
+          <Property Name="Columns" Type="Int32" Nullable="false" />
+          <Property Name="SpaceColumnWidth" Type="Int32" Nullable="false" />
+          <Property Name="SpaceRowHeight" Type="Int32" Nullable="false" />
+          <Property Name="ContentColumnWidth" Type="Int32" Nullable="false" />
+          <Property Name="ContentRowHeight" Type="Int32" Nullable="false" />
+          <Property Name="PositionsRow" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PositionsColumn" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TennisclubNeuModelStoreContainer" CdmEntityContainer="TennisclubNeuEntities">
+          <EntitySetMapping Name="Buchungen">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.Buchungen">
+              <MappingFragment StoreEntitySet="Buchungen">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PlatzId" ColumnName="PlatzId" />
+                <ScalarProperty Name="Startzeit" ColumnName="Startzeit" />
+                <ScalarProperty Name="Endzeit" ColumnName="Endzeit" />
+                <ScalarProperty Name="Spieler1Id" ColumnName="Spieler1Id" />
+                <ScalarProperty Name="Spieler2Id" ColumnName="Spieler2Id" />
+                <ScalarProperty Name="Spieler3Id" ColumnName="Spieler3Id" />
+                <ScalarProperty Name="Spieler4Id" ColumnName="Spieler4Id" />
+                <ScalarProperty Name="Titel" ColumnName="Titel" />
+                <ScalarProperty Name="Zeile1" ColumnName="Zeile1" />
+                <ScalarProperty Name="Zeile2" ColumnName="Zeile2" />
+                <ScalarProperty Name="Zeile3" ColumnName="Zeile3" />
+                <ScalarProperty Name="Zeile4" ColumnName="Zeile4" />
+                <ScalarProperty Name="Zeile5" ColumnName="Zeile5" />
+                <ScalarProperty Name="FesteBuchungGuid" ColumnName="FesteBuchungGuid" />
+                <ScalarProperty Name="TurnierspielGuid" ColumnName="TurnierspielGuid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Plätze">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.Plätze">
+              <MappingFragment StoreEntitySet="Plätze">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Platznummer" ColumnName="Platznummer" />
+                <ScalarProperty Name="Bezeichnung" ColumnName="Bezeichnung" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlatzInBearbeitung">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.PlatzInBearbeitung">
+              <MappingFragment StoreEntitySet="PlatzInBearbeitung">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PlatzId" ColumnName="PlatzId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Platzsperre">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.Platzsperre">
+              <MappingFragment StoreEntitySet="Platzsperre">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PlatzId" ColumnName="PlatzId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Spieler">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.Spieler">
+              <MappingFragment StoreEntitySet="Spieler">
+                <ScalarProperty Name="IstAktiv" ColumnName="IstAktiv" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Nachname" ColumnName="Nachname" />
+                <ScalarProperty Name="Vorname" ColumnName="Vorname" />
+                <ScalarProperty Name="ChipId" ColumnName="ChipId" />
+                <ScalarProperty Name="IstGebucht" ColumnName="IstGebucht" />
+                <ScalarProperty Name="IstAdminTurniere" ColumnName="IstAdminTurniere" />
+                <ScalarProperty Name="IstAdminPlatzsperre" ColumnName="IstAdminPlatzsperre" />
+                <ScalarProperty Name="IstAdminFesteBuchungen" ColumnName="IstAdminFesteBuchungen" />
+                <ScalarProperty Name="IstAdminBuchungen" ColumnName="IstAdminBuchungen" />
+                <ScalarProperty Name="IstAdminSpieler" ColumnName="IstAdminSpieler" />
+                <ScalarProperty Name="IstAdminRechte" ColumnName="IstAdminRechte" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpielerInBearbeitung">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.SpielerInBearbeitung">
+              <MappingFragment StoreEntitySet="SpielerInBearbeitung">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SpielerId" ColumnName="SpielerId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GridInfo">
+            <EntityTypeMapping TypeName="TennisclubNeuModel.GridInfo">
+              <MappingFragment StoreEntitySet="GridInfo">
+                <ScalarProperty Name="PositionsColumn" ColumnName="PositionsColumn" />
+                <ScalarProperty Name="PositionsRow" ColumnName="PositionsRow" />
+                <ScalarProperty Name="ContentRowHeight" ColumnName="ContentRowHeight" />
+                <ScalarProperty Name="ContentColumnWidth" ColumnName="ContentColumnWidth" />
+                <ScalarProperty Name="SpaceRowHeight" ColumnName="SpaceRowHeight" />
+                <ScalarProperty Name="SpaceColumnWidth" ColumnName="SpaceColumnWidth" />
+                <ScalarProperty Name="Columns" ColumnName="Columns" />
+                <ScalarProperty Name="Rows" ColumnName="Rows" />
+                <ScalarProperty Name="PlatzId" ColumnName="PlatzId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Kein" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

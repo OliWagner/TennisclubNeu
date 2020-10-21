@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="TennisClubNeu.UserControls.Admin.UserControlRechte"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TennisClubNeu.UserControls.Admin"
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="1500">
+    <Grid x:Name="grdMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="50*" />
+            <RowDefinition Height="800*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="26*" />
+            <ColumnDefinition Width="203*" />
+            <ColumnDefinition Width="107*" />
+            <ColumnDefinition Width="102*" />
+            <ColumnDefinition Width="120*" />
+            <ColumnDefinition Width="129*" />
+            <ColumnDefinition Width="128*" />
+            <ColumnDefinition Width="106*" />
+            <ColumnDefinition Width="490*" />
+            <ColumnDefinition Width="89*" />
+        </Grid.ColumnDefinitions>
+        <Label Content="Spieler" x:Name="LblName" Grid.Row="0" Grid.Column="1" />
+        <TextBox x:Name="tbId" HorizontalAlignment="Left" Visibility="Hidden" Text="0" Width="12" />
+        <Label Content="" x:Name="LblVollerName" Grid.Row="1" Grid.Column="1" />
+
+        <Label Content="Platzsperre" x:Name="LblIstAdminPlatzsperre" Grid.Row="0" Grid.Column="2" />
+        <CheckBox x:Name="chkPlatzsperre" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="2" Width="16" />
+
+        <Label Content="Spieler" x:Name="LblIstAdminSpieler" Grid.Row="0" Grid.Column="3" />
+        <CheckBox x:Name="chkSpieler" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="3" Width="16" />
+
+        <Label Content="Buchungen" x:Name="LblIstAdminBuchungen" Grid.Row="0" Grid.Column="4" />
+        <CheckBox x:Name="chkBuchungen" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="4" Width="16" />
+
+        <Label Content="Feste Buchungen" x:Name="LblIstAdminFesteBuchungen" Grid.Row="0" Grid.Column="5" />
+        <CheckBox x:Name="chkFesteBuchungen" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="5" Width="16" />
+
+        <Label Content="Turnierspiele" x:Name="LblIstAdminTurnierspiele" Grid.Row="0" Grid.Column="6" />
+        <CheckBox x:Name="chkTurnierspiele" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="6" Width="16" />
+
+        <Label Content="Rechte" x:Name="LblIstAdminRechte" Grid.Row="0" Grid.Column="7" />
+        <CheckBox x:Name="chkRechte" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="7" Width="16" />
+
+
+        <Button Visibility="Hidden" x:Name="BtnSpeichern" HorizontalAlignment="Left" Width="76" Content="Speichern" Click="BtnSpeichern_Click" Grid.Row="1" Grid.Column="8" />
+
+        <DataGrid IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False" AutoGeneratingColumn="dataGrid_AutoGeneratingColumn" x:Name="dataGrid" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="8" MouseDoubleClick="DataGrid_MouseDoubleClick"/>
+    </Grid>
+
+
+</UserControl>

@@ -15,14 +15,12 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlTurnierspiele : UserControl
     {
-        LogRechte Logger;
         List<Plätze> ListPlätze;
         List<Buchungen> buchungenToCheck;
 
-        public UserControlTurnierspiele(LogRechte logrechte)
+        public UserControlTurnierspiele()
         {
             InitializeComponent();
-            Logger = logrechte;
         }
 
         public void ZeichneGrid(List<Plätze> sgtPlätze)
@@ -167,7 +165,6 @@ namespace TennisClubNeu.UserControls.Admin
                     }
 
                     db.SaveChanges();
-                    Logger.Logger.Info(Logger.Rechte.Name + " bearbeitete Turnierspiele auf" + plaetze.ToString() + ", " + buchungenToCheck.First().Startzeit.ToShortDateString() + ", " + buchungenToCheck.First().Startzeit.ToShortTimeString() + " - " + buchungenToCheck.First().Endzeit.ToShortTimeString());
                     Reset();
                     ZeichneDatagrid();
                 }

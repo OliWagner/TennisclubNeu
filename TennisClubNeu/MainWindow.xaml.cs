@@ -9,7 +9,6 @@ using TennisclubNeu;
 using TennisClubNeu.UserControls;
 using TennisClubNeu.UserControls.Admin;
 using TennisClubNeu.UserControls.Platzbuchung;
-using log4net;
 
 namespace TennisClubNeu
 {
@@ -19,8 +18,6 @@ namespace TennisClubNeu
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         Rechte Rechte = null;
         Bedienleiste Bedienleiste = new Bedienleiste();
         public List<Plätze> sgtPlätze;
@@ -30,7 +27,6 @@ namespace TennisClubNeu
         public MainWindow()
         {
             InitializeComponent();
-            log4net.Config.XmlConfigurator.Configure();
             //Beim STart alle SPieler frei geben die eventuell noch vorhanden sind
             Helpers.ClearSpielerInBearbeitung();
             ZeichneMainGrid();
@@ -253,7 +249,7 @@ namespace TennisClubNeu
 
             if (typ.Equals("Turnierspiele"))
             {
-                UserControlTurnierspiele ctr = new UserControlTurnierspiele(new LogRechte(Rechte, log));
+                UserControlTurnierspiele ctr = new UserControlTurnierspiele();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 ctr.SetValue(Grid.ColumnSpanProperty, 6);
@@ -263,7 +259,7 @@ namespace TennisClubNeu
 
             if (typ.Equals("Rechte"))
             {
-                UserControlRechte ctr = new UserControlRechte(new LogRechte(Rechte, log));
+                UserControlRechte ctr = new UserControlRechte();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 ctr.SetValue(Grid.ColumnSpanProperty, 8);
@@ -273,7 +269,7 @@ namespace TennisClubNeu
 
             if (typ.Equals("Buchungen"))
             {
-                UserControlAdminBuchung ctr = new UserControlAdminBuchung(new LogRechte(Rechte, log));
+                UserControlAdminBuchung ctr = new UserControlAdminBuchung();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 ctr.SetValue(Grid.ColumnSpanProperty, 6);
@@ -282,7 +278,7 @@ namespace TennisClubNeu
 
             if (typ.Equals("Spieler"))
             {
-                UserControlSpieler ctr = new UserControlSpieler(new LogRechte(Rechte, log));
+                UserControlSpieler ctr = new UserControlSpieler();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 ctr.SetValue(Grid.ColumnSpanProperty, 3);
@@ -292,7 +288,7 @@ namespace TennisClubNeu
 
             if (typ.Equals("FesteBuchungen"))
             {
-                UserControlFesteBuchung ctr = new UserControlFesteBuchung(new LogRechte(Rechte, log));
+                UserControlFesteBuchung ctr = new UserControlFesteBuchung();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 ctr.SetValue(Grid.ColumnSpanProperty, 6);
@@ -321,7 +317,7 @@ namespace TennisClubNeu
             }
 
             if (typ.Equals("Platzsperre")) {
-                UserControlPlatzsperre ctr = new UserControlPlatzsperre(new LogRechte(Rechte, log));
+                UserControlPlatzsperre ctr = new UserControlPlatzsperre();
                 Grid.SetRow(ctr, 1);
                 Grid.SetColumn(ctr, 1);
                 grdMain.Children.Add(ctr);

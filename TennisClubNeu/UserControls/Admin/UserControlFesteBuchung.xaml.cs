@@ -17,14 +17,12 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlFesteBuchung : UserControl
     {
-        LogRechte Logger;
         List<Plätze> ListPlätze;
         List<Buchungen> buchungenToCheck;
 
-        public UserControlFesteBuchung(LogRechte logrechte)
+        public UserControlFesteBuchung()
         {
             InitializeComponent();
-            Logger = logrechte;
         }
 
         public void ZeichneGrid(List<Plätze> sgtPlätze) {
@@ -321,7 +319,6 @@ namespace TennisClubNeu.UserControls.Admin
                     }
                     
                     db.SaveChanges();
-                    Logger.Logger.Info(Logger.Rechte.Name + " --> FB ' " + sb.ToString() + " " + buchungenToCheck.First().Titel + "', " + buchungenToCheck.First().Startzeit.ToShortTimeString() + " - " + buchungenToCheck.First().Endzeit.ToShortTimeString() + "(" + buchungenToCheck.First().Startzeit.ToShortDateString() + " - " + buchungenToCheck.Last().Startzeit.ToShortDateString() +  ")");
                     Reset();
                     ZeichneDatagrid();
                 }

@@ -12,11 +12,9 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlAdminBuchung : UserControl
     {
-        LogRechte Logger;
-        public UserControlAdminBuchung(LogRechte logrechte)
+        public UserControlAdminBuchung()
         {
             InitializeComponent();
-            Logger = logrechte;
             ZeichneGrid();
         }
 
@@ -92,7 +90,6 @@ namespace TennisClubNeu.UserControls.Admin
                 Buchungen buchung = (from Buchungen bu in db.Buchungen where bu.Id == id select bu).FirstOrDefault();
                 db.Buchungen.Remove(buchung);
                 db.SaveChanges();
-                Logger.Logger.Info(Logger.Rechte.Name + " loescht Buchung Platz " +buchung.PlatzId + " '" + buchung.Titel + "' vom " + buchung.Startzeit.ToShortDateString() + " um " + buchung.Startzeit.ToShortTimeString());
                 ZeichneGrid();
             }
         }

@@ -13,11 +13,9 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlRechte : UserControl
     {
-        LogRechte Logger;
-        public UserControlRechte(LogRechte logrechte)
+        public UserControlRechte()
         {
             InitializeComponent();
-            Logger = logrechte;
             ZeichneGrid();
         }
 
@@ -80,7 +78,6 @@ namespace TennisClubNeu.UserControls.Admin
                 spieler.IstAdminPlatzsperre = (bool)chkPlatzsperre.IsChecked;
 
                 db.SaveChanges();
-                Logger.Logger.Info(Logger.Rechte.Name + " aendert Rechte von " + spieler.Vorname + " " + spieler.Nachname);
                 Clear();
             }
         }

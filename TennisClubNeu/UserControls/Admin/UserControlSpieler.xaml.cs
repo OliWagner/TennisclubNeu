@@ -13,11 +13,9 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlSpieler : UserControl
     {
-        LogRechte Logger;
-        public UserControlSpieler(LogRechte logrechte)
+        public UserControlSpieler()
         {
             InitializeComponent();
-            Logger = logrechte;
             ZeichneGrid();
         }
 
@@ -108,8 +106,7 @@ namespace TennisClubNeu.UserControls.Admin
                     neuspielername = " aendert Spieler " + s.Vorname + " " + s.Nachname + ".";
                 }
                 db.SaveChanges();
-                Logger.Logger.Info(Logger.Rechte.Name + neuspielername);
-                Clear();
+                 Clear();
             }
         }
 

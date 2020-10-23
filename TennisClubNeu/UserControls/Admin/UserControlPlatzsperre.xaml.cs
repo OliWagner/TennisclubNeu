@@ -13,12 +13,10 @@ namespace TennisClubNeu.UserControls.Admin
     /// </summary>
     public partial class UserControlPlatzsperre : UserControl
     {
-        LogRechte Logger;
 
-        public UserControlPlatzsperre(LogRechte logrechte)
+        public UserControlPlatzsperre()
         {
             InitializeComponent();
-            Logger = logrechte;
         }
 
         private void ErstelleGrid(List<Plätze> sgtPlätze) {
@@ -97,16 +95,7 @@ namespace TennisClubNeu.UserControls.Admin
                 }
                 List<Platzsperre> liste = (from Platzsperre ps in db.Platzsperre select ps).ToList();
                 db.Platzsperre.RemoveRange(liste);
-                StringBuilder LogNachricht = new StringBuilder();
-                LogNachricht.Append(Logger.Rechte.Name + " sperrt Plaetze: ");
-                foreach (int i in sperren) {
-                    Platzsperre p = new Platzsperre();
-                    p.PlatzId = i;
-                    db.Platzsperre.Add(p);
-                    LogNachricht.Append(i + " ");
-                }
                 db.SaveChanges();
-                Logger.Logger.Info(LogNachricht.ToString());
             }
         }
     }

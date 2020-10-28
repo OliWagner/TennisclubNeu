@@ -95,6 +95,12 @@ namespace TennisClubNeu.UserControls.Admin
                 }
                 List<Platzsperre> liste = (from Platzsperre ps in db.Platzsperre select ps).ToList();
                 db.Platzsperre.RemoveRange(liste);
+                foreach (int id in sperren)
+                {
+                    Platzsperre ps = new Platzsperre();
+                    ps.PlatzId = id;
+                    db.Platzsperre.Add(ps);
+                }
                 db.SaveChanges();
             }
         }

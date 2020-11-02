@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Admin
 {
@@ -20,11 +21,7 @@ namespace TennisClubNeu.UserControls.Admin
 
         private void ZeichneGrid()
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                List<Buchungen> bookings = (from Buchungen s in db.Buchungen orderby s.Endzeit descending select s).ToList();
-                dataGrid.ItemsSource = bookings;
-            }
+                dataGrid.ItemsSource = AdminBuchungRepository.GetInstance().GetBuchungen(); ;
         }
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -86,12 +83,9 @@ namespace TennisClubNeu.UserControls.Admin
         {
             Buchungen b = (Buchungen)dataGrid.SelectedItem;
             int id = b.Id;
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Buchungen buchung = (from Buchungen bu in db.Buchungen where bu.Id == id select bu).FirstOrDefault();
-                db.Buchungen.Remove(buchung);
-                db.SaveChanges();
-                ZeichneGrid();
-            }
+            AdminBuchungRepository.GetInstance().RemoveBuchung(id);
+            ZeichneGrid();
+
         }
     }
 }

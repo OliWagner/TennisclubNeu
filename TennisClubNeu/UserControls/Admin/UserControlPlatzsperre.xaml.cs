@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Admin
 {
@@ -43,8 +44,8 @@ namespace TennisClubNeu.UserControls.Admin
             int counter = 0;
 
 
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                int[] plId = (from Platzsperre ps in db.Platzsperre select ps.PlatzId).ToArray();
+
+            int[] plId = PlatzsperreRepository.GetInstance().GetPlatzsperren(); ;
 
                 foreach (Plätze item in sgtPlätze)
                 {
@@ -62,11 +63,6 @@ namespace TennisClubNeu.UserControls.Admin
                     grdMain.Children.Add(chk);
                     counter++;
                 }
-            }
-
-                
-
-
 
             Button btn = new Button();
             btn.Content = "Speichern";
@@ -79,7 +75,7 @@ namespace TennisClubNeu.UserControls.Admin
         private void BtnSpeichern_Click(object sender, RoutedEventArgs e)
         {
             List<int> sperren = new List<int>();
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
+            
 
                 foreach (DependencyObject obj in grdMain.Children)
                 {
@@ -93,16 +89,7 @@ namespace TennisClubNeu.UserControls.Admin
                         }
                     }
                 }
-                List<Platzsperre> liste = (from Platzsperre ps in db.Platzsperre select ps).ToList();
-                db.Platzsperre.RemoveRange(liste);
-                foreach (int id in sperren)
-                {
-                    Platzsperre ps = new Platzsperre();
-                    ps.PlatzId = id;
-                    db.Platzsperre.Add(ps);
-                }
-                db.SaveChanges();
-            }
+            PlatzsperreRepository.GetInstance().Save(sperren);    
         }
     }
 }

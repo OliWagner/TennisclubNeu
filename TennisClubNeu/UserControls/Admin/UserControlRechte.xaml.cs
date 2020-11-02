@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Admin
 {
@@ -20,10 +21,9 @@ namespace TennisClubNeu.UserControls.Admin
         }
 
         private void ZeichneGrid() {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                List<Spieler> spieler = (from Spieler s in db.Spieler orderby s.Nachname, s.Vorname select s).ToList();
-                dataGrid.ItemsSource = spieler;
-            }
+
+            dataGrid.ItemsSource = RechteRepository.GetInstance().GetSpieler();
+            
         }
         private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
@@ -66,20 +66,8 @@ namespace TennisClubNeu.UserControls.Admin
 
         private void BtnSpeichern_Click(object sender, RoutedEventArgs e)
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                int id = Int32.Parse(tbId.Text);
-                Spieler spieler = (from Spieler s in db.Spieler where s.Id == id select s).FirstOrDefault();
-
-                spieler.IstAdminBuchungen = (bool)chkBuchungen.IsChecked;
-                spieler.IstAdminFesteBuchungen = (bool)chkFesteBuchungen.IsChecked;
-                spieler.IstAdminSpieler = (bool)chkSpieler.IsChecked;
-                spieler.IstAdminTurniere = (bool)chkTurnierspiele.IsChecked;
-                spieler.IstAdminRechte = (bool)chkRechte.IsChecked;
-                spieler.IstAdminPlatzsperre = (bool)chkPlatzsperre.IsChecked;
-
-                db.SaveChanges();
-                Clear();
-            }
+            RechteRepository.GetInstance().Save(Int32.Parse(tbId.Text), (bool)chkBuchungen.IsChecked, (bool)chkFesteBuchungen.IsChecked, (bool)chkSpieler.IsChecked, (bool)chkTurnierspiele.IsChecked, (bool)chkRechte.IsChecked, (bool)chkPlatzsperre.IsChecked);
+            Clear();
         }
     }
 }

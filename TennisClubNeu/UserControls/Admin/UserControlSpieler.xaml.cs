@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Admin
 {
@@ -20,11 +20,10 @@ namespace TennisClubNeu.UserControls.Admin
         }
 
         private void ZeichneGrid() {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                List<Spieler> spieler = (from Spieler s in db.Spieler orderby s.Nachname, s.Vorname select s).ToList();
-                dataGrid.ItemsSource = spieler;
-            }
+
+            dataGrid.ItemsSource = SpielerRepository.GetInstance().GetSpieler();
         }
+
         private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.Column.Header.ToString() == "Id")
@@ -49,9 +48,6 @@ namespace TennisClubNeu.UserControls.Admin
 
             if (e.Column.Header.ToString() == "IstAdminRechte")
                 e.Column.Visibility = System.Windows.Visibility.Hidden;
-
-
-
         }
 
         private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -76,46 +72,14 @@ namespace TennisClubNeu.UserControls.Admin
 
         private void BtnSpeichern_Click(object sender, RoutedEventArgs e)
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                string neuspielername = "";
-
-                if (tbId.Text.Equals("0"))
-                {
-                    Spieler s = new Spieler();
-                    s.Nachname = tbNachname.Text;
-                    s.Vorname = tbVorname.Text;
-                    s.ChipId = tbChipId.Text;
-                    s.IstAdminBuchungen = false;
-                    s.IstAdminFesteBuchungen = false;
-                    s.IstAdminPlatzsperre = false;
-                    s.IstAdminRechte = false;
-                    s.IstAdminTurniere = false;
-                    s.IstAdminSpieler = false;
-                    s.IstAktiv = true;
-                    db.Spieler.Add(s);
-                    neuspielername = " fuegt Spieler " + s.Vorname + " " + s.Nachname + " hinzu.";
-                }
-                else
-                {
-                    int i = Int32.Parse(tbId.Text);
-                    Spieler s = (from Spieler sp in db.Spieler where sp.Id == i select sp).FirstOrDefault();
-                    s.Nachname = tbNachname.Text;
-                    s.Vorname = tbVorname.Text;
-                    s.ChipId = tbChipId.Text;
-                    s.IstAktiv = (bool)chkAktiv.IsChecked;
-                    neuspielername = " aendert Spieler " + s.Vorname + " " + s.Nachname + ".";
-                }
-                db.SaveChanges();
-                 Clear();
-            }
+            SpielerRepository.GetInstance().Save(tbId.Text, tbNachname.Text, tbVorname.Text, tbChipId.Text, (bool)chkAktiv.IsChecked);            
+            Clear();
         }
 
         private void BtnSpeichern_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                int Id = Int32.Parse(tbId.Text);
-
-                List<string> lstChipIds = (from Spieler spieler in db.Spieler where spieler.Id != Id select spieler.ChipId).ToList();
+                List<string> lstChipIds = SpielerRepository.GetInstance().GetListChipIds(Int32.Parse(tbId.Text));
 
                 if (tbNachname.Text.Length < 2 || tbVorname.Text.Length < 2 || tbChipId.Text.Length == 0 || !CheckChipId(lstChipIds))
                 {

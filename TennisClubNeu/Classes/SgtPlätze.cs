@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Configuration;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.Classes
 {
@@ -14,11 +15,7 @@ namespace TennisClubNeu.Classes
 
         private SgtPlätze()
         {
-            string strAnzahlPlätze = ConfigurationSettings.AppSettings.Get("AnzahlPlätze");
-            int intAnzahlPlätze = Int32.Parse(strAnzahlPlätze);
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Plätze = (from Plätze pl in db.Plätze where pl.Id <= intAnzahlPlätze orderby pl.Id ascending select pl).ToList();
-            }
+            Plätze = PlatzRepository.GetInstance().GetPlätze();
         }
 
         public static SgtPlätze Instance

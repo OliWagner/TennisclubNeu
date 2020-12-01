@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Admin
 {
@@ -65,47 +66,7 @@ namespace TennisClubNeu.UserControls.Admin
 
         private void ZeichneDatagrid()
         {
-            List<AnzeigeDatenTurnierspiel> lstDaten = new List<AnzeigeDatenTurnierspiel>();
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                List<string> guids = new List<string>();
-                List<Buchungen> liste = (from Buchungen bu in db.Buchungen where bu.TurnierspielGuid != null orderby bu.TurnierspielGuid select bu).ToList();
-                foreach (Buchungen buchung in liste)
-                {
-                    int[] plaetze = (from Buchungen bu in db.Buchungen where bu.TurnierspielGuid.Equals(buchung.TurnierspielGuid) select bu.PlatzId).ToArray();
-                    
-                    if (!guids.Contains(buchung.TurnierspielGuid))
-                    {
-                        guids.Add(buchung.TurnierspielGuid);
-                        AnzeigeDatenTurnierspiel daten = new AnzeigeDatenTurnierspiel();
-                        daten.Von = buchung.Startzeit.ToLongTimeString();
-                        daten.Bis = buchung.Endzeit.ToLongTimeString();
-                        daten.Guid = buchung.TurnierspielGuid;
-                        daten.Titel = buchung.Titel;
-                        daten.Startdatum = buchung.Startzeit;
-                        daten.Enddatum = buchung.Endzeit;
-                        daten.Plätze = GetStringFromArray(plaetze);
-                        lstDaten.Add(daten);
-                    }
-                }
-                dataGrid.ItemsSource = lstDaten;
-            }
-        }
-
-        private string GetStringFromArray(int[] plaetze)
-        {
-            StringBuilder sb = new StringBuilder();
-            List<int> done = new List<int>();
-            foreach (int id in plaetze)
-            {
-                if (!done.Contains(id))
-                {
-                    done.Add(id);
-                    sb.Append(id + ";");
-                }
-
-            }
-            return sb.ToString(0, sb.Length - 1).ToString();
+            dataGrid.ItemsSource = TurnierspieleRepository.GetInstance().GetListBuchungen();
         }
 
         private void GrdMain_Changed(object sender, RoutedEventArgs e)
@@ -145,29 +106,9 @@ namespace TennisClubNeu.UserControls.Admin
         {
             if (btnSpeichern.Content.Equals("Speichern"))
             {
-                using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-                {
-                    //Erst alle löschen wenn vorhanden
-                    if (!tbGuid.Text.Equals(""))
-                    {
-                        List<Buchungen> toDelete = (from Buchungen bu in db.Buchungen where bu.TurnierspielGuid.Equals(tbGuid.Text) select bu).ToList();
-                        db.Buchungen.RemoveRange(toDelete);
-                    }
-
-                    Guid guid = Guid.NewGuid();
-
-                    StringBuilder plaetze = new StringBuilder();
-                    foreach (Buchungen buchung in buchungenToCheck)
-                    {
-                        buchung.TurnierspielGuid = guid.ToString().Replace("-", "");
-                        db.Buchungen.Add(buchung);
-                        plaetze.Append(" " + buchung.PlatzId);
-                    }
-
-                    db.SaveChanges();
-                    Reset();
-                    ZeichneDatagrid();
-                }
+                TurnierspieleRepository.GetInstance().Save(tbGuid.Text, buchungenToCheck);
+                Reset();
+                ZeichneDatagrid();
             }
             else
             {
@@ -198,41 +139,26 @@ namespace TennisClubNeu.UserControls.Admin
             string[] platzNummern = azdfb.Plätze.Split(';');
             foreach (string id in platzNummern)
             {
-                var checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + id);
+                var checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + id);
 
                 checkBox.IsChecked = true;
             }
 
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                Buchungen buchung = (from Buchungen bu in db.Buchungen where bu.TurnierspielGuid.Equals(azdfb.Guid) select bu).FirstOrDefault();
+            Buchungen buchung = TurnierspieleRepository.GetInstance().GetBuchung(azdfb.Guid);
                 tbZeile1.Text = buchung.Zeile1;
                 tbZeile2.Text = buchung.Zeile2;
                 tbZeile3.Text = buchung.Zeile3;
                 tbZeile4.Text = buchung.Zeile4;
                 tbZeile5.Text = buchung.Zeile5;
-            }
+            
         }
 
         private bool CheckBuchungen()
         {
-            bool returner = true;
-            StringBuilder fehler = new StringBuilder();
             buchungenToCheck = BaueBuchungen();
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                foreach (Buchungen buchung in buchungenToCheck)
-                {
-                    Buchungen b = (from Buchungen bu in db.Buchungen where bu.PlatzId == buchung.PlatzId && !bu.TurnierspielGuid.Equals(tbGuid.Text) && ((bu.Startzeit <= buchung.Startzeit && bu.Endzeit > buchung.Startzeit) || (bu.Startzeit < buchung.Endzeit && bu.Endzeit >= buchung.Endzeit)) select bu).FirstOrDefault();
-                    if (b != null)
-                    {
-                        fehler.Append(buchung.Startzeit.ToShortDateString() + " P" + buchung.PlatzId + " " + b.Titel + "\n");
-                        returner = false;
-                    }
-
-                }
-                tblWarnings.Text = fehler.ToString();
-            }
+            string fehler = "";
+            bool returner = TurnierspieleRepository.GetInstance().CheckBuchungen(buchungenToCheck, tbGuid.Text, out fehler);
+            tblWarnings.Text = fehler;
             return returner;
         }
 
@@ -245,7 +171,7 @@ namespace TennisClubNeu.UserControls.Admin
             List<int> _plaetze = new List<int>();
             foreach (Plätze platz in ListPlätze)
             {
-                CheckBox checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer.ToString());
+                CheckBox checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer.ToString());
                 if ((bool)checkBox.IsChecked)
                 {
                     _plaetze.Add(platz.Platznummer);
@@ -303,7 +229,7 @@ namespace TennisClubNeu.UserControls.Admin
 
             foreach (Plätze p in ListPlätze)
             {
-                CheckBox checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + p.Platznummer.ToString());
+                CheckBox checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + p.Platznummer.ToString());
 
                 checkBox.IsChecked = false;
             }
@@ -317,7 +243,7 @@ namespace TennisClubNeu.UserControls.Admin
             List<int> ids = new List<int>();
             foreach (Plätze platz in ListPlätze)
             {
-                var checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer);
+                var checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer);
                 if ((bool)checkBox.IsChecked)
                 {
                     ids.Add(platz.Platznummer);
@@ -333,60 +259,6 @@ namespace TennisClubNeu.UserControls.Admin
             if (dpStart.SelectedDate == null) { return false; }
 
             return true;
-        }
-
-        public static T FindChild<T>(DependencyObject parent, string childName)
-        where T : DependencyObject
-        {
-            // Confirm parent and childName are valid. 
-            if (parent == null)
-            {
-                return null;
-            }
-
-            T foundChild = null;
-
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                // If the child is not of the request child type child
-                var childType = child as T;
-                if (childType == null)
-                {
-                    // recursively drill down the tree
-                    foundChild = FindChild<T>(child, childName);
-
-                    // If the child is found, break so we do not overwrite the found child. 
-                    if (foundChild != null)
-                    {
-                        break;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        // if the child's name is of the request name
-                        foundChild = (T)child;
-                        break;
-                    }
-
-                    // Need this in case the element we want is nested
-                    // in another element of the same type
-                    foundChild = FindChild<T>(child, childName);
-                }
-                else
-                {
-                    // child element found.
-                    foundChild = (T)child;
-                    break;
-                }
-            }
-
-            return foundChild;
         }
     }
 }

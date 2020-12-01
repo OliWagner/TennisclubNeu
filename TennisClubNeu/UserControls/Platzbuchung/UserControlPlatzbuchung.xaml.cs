@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TennisclubNeu;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls
 {
@@ -35,12 +36,10 @@ namespace TennisClubNeu.UserControls
 
         public void InitializeData(AnzeigePlatz ap, int spielerId)
         {
+
+            Spieler sp = SpielerRepository.GetInstance().GetSpielerById(spielerId);
+            SetzeSpieler(sp.Id);
             
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                Spieler sp = (from Spieler s in db.Spieler where s.Id == spielerId select s).FirstOrDefault();
-                SetzeSpieler(sp.Id);
-            }
             _ap = ap;
             string strUhrzeit = _ap.Uhrzeit.Content.ToString();
             if (strUhrzeit.Equals("frei"))
@@ -164,32 +163,18 @@ namespace TennisClubNeu.UserControls
         }
 
         private void ZeichneAuswahl() {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
+            
+            dgSpielerwahl.ItemsSource = SpielerRepository.GetInstance().GetFuerBuchungVerfuegbareSpieler(tbAnzeige.Text, Spieler1.Id, Spieler2.Id, Spieler3.Id, Spieler4.Id);
+
+            dgSpielerwahl.Columns.RemoveAt(0);
+            for (int i = dgSpielerwahl.Columns.Count - 1; i > 1; i--)
             {
-                List<Spieler> alleSpieler = (from Spieler s in db.Spieler where (s.Nachname.Contains(tbAnzeige.Text) || s.Vorname.Contains(tbAnzeige.Text)) && (s.Id != Spieler1.Id) && (s.Id != Spieler2.Id) && (s.Id != Spieler3.Id) && (s.Id != Spieler4.Id) && s.IstGebucht == false orderby s.Nachname select s).ToList();
-                List<int> idsEntfernen = (from SpielerInBearbeitung sib in db.SpielerInBearbeitung select sib.SpielerId).ToList();
-                List<Spieler> toDelete = new List<Spieler>();
-                foreach (int id in idsEntfernen)
-                {
-                    Spieler spieler = (from Spieler s in db.Spieler where s.Id == id select s).FirstOrDefault();
-                    if (alleSpieler.Contains(spieler)) {
-                        alleSpieler.Remove(spieler);
-                    }
-                }
-                dgSpielerwahl.ItemsSource = alleSpieler;
-                dgSpielerwahl.Columns.RemoveAt(0);
-                for (int i = dgSpielerwahl.Columns.Count - 1; i > 1; i--)
-                {
-                        dgSpielerwahl.Columns.RemoveAt(i);
-                }
-                dgSpielerwahl.HeadersVisibility = DataGridHeadersVisibility.None;
+                dgSpielerwahl.Columns.RemoveAt(i);
             }
+            dgSpielerwahl.HeadersVisibility = DataGridHeadersVisibility.None;  
         }
 
-
         int _selectedSpielerId;
-
-        
 
         private void DgSpielerwahl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -209,26 +194,26 @@ namespace TennisClubNeu.UserControls
 
 
         public void SetzeSpieler(int spielerId) {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Spieler sp = (from Spieler s in db.Spieler where s.Id == spielerId select s).FirstOrDefault();
-                if (Spieler1.Nachname == null) { Spieler1 = sp; tbAnzeige.Text = ""; tbSpieler1.Text = Helpers.GetSpielerNameById(db, sp.Id);
+                Spieler sp = SpielerRepository.GetInstance().GetSpielerById(spielerId);
+
+                if (Spieler1.Nachname == null) { Spieler1 = sp; tbAnzeige.Text = ""; tbSpieler1.Text = Helpers.GetSpielerNameById(sp.Id);
                     Helpers.SetzeSpielerInBearbeitung(Spieler1.Id, false);
                     return; }               
-                if (Spieler2.Nachname == null) { Spieler2 = sp; tbAnzeige.Text = ""; tbSpieler2.Text = Helpers.GetSpielerNameById(db, sp.Id);
+                if (Spieler2.Nachname == null) { Spieler2 = sp; tbAnzeige.Text = ""; tbSpieler2.Text = Helpers.GetSpielerNameById(sp.Id);
                     btnBuchungSpeichern.Visibility = Visibility.Visible;
                     Helpers.SetzeSpielerInBearbeitung(Spieler2.Id, false);
                     return; }
-                if (Spieler3.Nachname == null) { Spieler3 = sp; tbAnzeige.Text = ""; tbSpieler3.Text = Helpers.GetSpielerNameById(db, sp.Id);
+                if (Spieler3.Nachname == null) { Spieler3 = sp; tbAnzeige.Text = ""; tbSpieler3.Text = Helpers.GetSpielerNameById(sp.Id);
                     Helpers.SetzeSpielerInBearbeitung(Spieler3.Id, false);
                     return; }
-                if (Spieler4.Nachname == null) { Spieler4 = sp; tbAnzeige.Text = ""; tbSpieler4.Text = Helpers.GetSpielerNameById(db, sp.Id);
+                if (Spieler4.Nachname == null) { Spieler4 = sp; tbAnzeige.Text = ""; tbSpieler4.Text = Helpers.GetSpielerNameById(sp.Id);
                     if (!_istRestBuchung) {
                         //REstbuchung ist die verbleibende Zeit bis zu einem vorher feststehenden Termin bis zu 59 Minuten
                         Endezeit = Endezeit.AddHours(0.5);
                     }
                     Helpers.SetzeSpielerInBearbeitung(Spieler4.Id, false);
                     tbUhrzeit.Text = "Platz " + PlatzId + " " + Startzeit.ToShortTimeString() + " - " + Endezeit.ToShortTimeString();
-                    return; }
+                    return;
             }
         }
 
@@ -272,12 +257,8 @@ namespace TennisClubNeu.UserControls
 
         private void BtnBuchungSpeichern_Click(object sender, RoutedEventArgs e)
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-
                 Helpers.SetzeSpielerIstGebucht(Spieler1.Id, true);
-
                 Helpers.SetzeSpielerIstGebucht(Spieler2.Id, true);
-
 
                 if (Spieler3.Id != 0) {
                     Helpers.SetzeSpielerIstGebucht(Spieler3.Id, true);
@@ -297,9 +278,7 @@ namespace TennisClubNeu.UserControls
                 buchung.Spieler2Id = Spieler2.Id;
                 buchung.Spieler3Id = Spieler3.Id;
                 buchung.Spieler4Id = Spieler4.Id;
-                db.Buchungen.Add(buchung);
-                db.SaveChanges();
-            }
+            BuchungenRepository.GetInstance().BuchungEintragen(buchung);
             SetzeSpielerInBearbeitungFrei();
         }
     }

@@ -1,0 +1,6 @@
+projectKey=Tennisclub
+serverUrl=http://localhost:9000
+serverVersion=8.4.2.36762
+dashboardUrl=http://localhost:9000/dashboard?id=Tennisclub
+ceTaskId=AXW35_t4q-NR6RBJcCGB
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AXW35_t4q-NR6RBJcCGB

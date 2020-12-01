@@ -78,7 +78,6 @@ namespace TennisClubNeu.UserControls.Admin
 
         private void BtnSpeichern_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
                 List<string> lstChipIds = SpielerRepository.GetInstance().GetListChipIds(Int32.Parse(tbId.Text));
 
                 if (tbNachname.Text.Length < 2 || tbVorname.Text.Length < 2 || tbChipId.Text.Length == 0 || !CheckChipId(lstChipIds))
@@ -87,8 +86,6 @@ namespace TennisClubNeu.UserControls.Admin
                     return;
                 }
                 e.CanExecute = true;
-            }
-            
         }
 
         private bool CheckChipId(List<string> lstChipIds) {

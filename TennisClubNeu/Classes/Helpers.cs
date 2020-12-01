@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using TennisclubNeu;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.Classes
 {
@@ -62,29 +64,13 @@ namespace TennisClubNeu.Classes
         }
 
         public static Rechte GetRechteFuerAnmeldung(string anmeldeId) {
-            Rechte rechte = new Rechte();
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-
-                Spieler spieler = (from Spieler sp in db.Spieler where sp.ChipId.Equals(anmeldeId) select sp).FirstOrDefault();
-                if (spieler == null)
-                {
-                    return null;
-                }
-                rechte.Name = spieler.Vorname + " " + spieler.Nachname;
-                rechte.Id = spieler.Id;
-                rechte.IsAdminBuchungen = spieler.IstAdminBuchungen;
-                rechte.IsAdminFesteBuchungen = spieler.IstAdminFesteBuchungen;
-                rechte.IsAdminTurnierspiele = spieler.IstAdminTurniere;
-                rechte.IsAdminPlatzsperre = spieler.IstAdminPlatzsperre;
-                rechte.IsAdminRechte = spieler.IstAdminRechte;
-                rechte.IsAdminSpieler = spieler.IstAdminSpieler;
-                return rechte;
-            }
+            Rechte rechte = RechteRepository.GetInstance().GetRechteFuerAnmeldung(anmeldeId);
+            return rechte;
         }
 
-        public static string GetSpielerNameById(TennisclubNeuEntities db, int? id)
+        public static string GetSpielerNameById(int? id)
         {
-            Spieler spieler = (from Spieler s in db.Spieler where s.Id == id select s).FirstOrDefault();
+            Spieler spieler = SpielerRepository.GetInstance().GetSpielerById((int)id);
 
             if (spieler == null)
             {
@@ -98,94 +84,20 @@ namespace TennisClubNeu.Classes
         /// <param name="Id"></param>
         /// <param name="_bool"></param>
         public static void SetzeSpielerInBearbeitung(int Id, bool _bool) {
-            if (_bool)
-            {//Der Spieler ist bereits angemeldet und muss entfernt werden
-                using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-                {
-                    SpielerInBearbeitung sib = (from SpielerInBearbeitung s in db.SpielerInBearbeitung where s.SpielerId == Id select s).FirstOrDefault();
-                    if (sib!=null) { 
-                    db.SpielerInBearbeitung.Remove(sib);
-                    db.SaveChanges();
-                    }
-                }
-            }
-            else
-            {//Der Spieler wird angemeldet
-                using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-                {
-                    SpielerInBearbeitung s = new SpielerInBearbeitung();
-                    s.SpielerId = Id;
-                    db.SpielerInBearbeitung.Add(s);
-                    db.SaveChanges();
-                }
-            }
-
-            
+            SpielerRepository.GetInstance().SetzeSpielerInBearbeitung(Id, _bool);
         }
 
         public static void ClearSpielerInBearbeitung()
         {
-           
-                using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-                {
-                    List<SpielerInBearbeitung> sib = (from SpielerInBearbeitung s in db.SpielerInBearbeitung select s).ToList();
-                    if (sib != null)
-                    {
-                        db.SpielerInBearbeitung.RemoveRange(sib);
-                        db.SaveChanges();
-                    }
-                }
+            SpielerRepository.GetInstance().ClearSpielerInBearbeitung();
         }
 
         public static void ClearSpielerIstGebucht() {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                List<int> _alleSpielerIdsGebucht = new List<int>();
-                List<Spieler> _alleSpieler = (from Spieler spieler in db.Spieler select spieler).ToList();
-                List <Buchungen> _buchungen = (from Buchungen bu in db.Buchungen where (bu.Endzeit > DateTime.Now) && (bu.Spieler1Id != null) select bu).ToList();
-                foreach (Buchungen buchung in _buchungen)
-                {
-                    if (buchung.Spieler1Id != null)
-                    {
-                            _alleSpielerIdsGebucht.Add((int)buchung.Spieler1Id);
-                    }
-
-                    if (buchung.Spieler2Id != null)
-                    {
-                            _alleSpielerIdsGebucht.Add((int)buchung.Spieler2Id);
-                    }
-
-                    if (buchung.Spieler3Id != null)
-                    {
-                            _alleSpielerIdsGebucht.Add((int)buchung.Spieler3Id);
-                    }
-
-                    if (buchung.Spieler4Id != null)
-                    {
-                            _alleSpielerIdsGebucht.Add((int)buchung.Spieler4Id);
-                    }
-                }
-                foreach (Spieler spieler in _alleSpieler)
-                {
-                    if (_alleSpielerIdsGebucht.Contains(spieler.Id)) {
-                        spieler.IstGebucht = true;
-                    } else {
-                        spieler.IstGebucht = false;
-                    }
-                }
-                db.SaveChanges();
-            }
+            SpielerRepository.GetInstance().ClearSpielerIstGebucht();
         }
 
         public static Buchungen CheckSpielerGebucht(int spielerId) {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Buchungen buchung = (from Buchungen bu in db.Buchungen where (bu.Endzeit > DateTime.Now) && (bu.Spieler1Id == spielerId || bu.Spieler2Id == spielerId || bu.Spieler3Id == spielerId || bu.Spieler4Id == spielerId) select bu).FirstOrDefault();
-                if (buchung != null)
-                {
-                    //Der Spieler ist bereits gebucht. Die Buchung wird dann in der Anzeige zur Bestätigung verwendet
-                        return buchung;
-                }
-            }
-            return null;
+            return SpielerRepository.GetInstance().CheckSpielerGebucht(spielerId);
         }
 
         /// <summary>
@@ -194,11 +106,59 @@ namespace TennisClubNeu.Classes
         /// <param name="spielerId"></param>
         /// <param name="_bool"></param>
         public static void SetzeSpielerIstGebucht(int spielerId, bool _bool) {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Spieler spieler = (from Spieler s in db.Spieler where s.Id == spielerId select s).FirstOrDefault();
-                spieler.IstGebucht = _bool;
-                db.SaveChanges();
-            }
+            SpielerRepository.GetInstance().SetzeSpielerIstGebucht(spielerId, _bool);
         }
+
+        public static T FindChild<T>(DependencyObject parent, string childName)
+        where T : DependencyObject
+        {
+            // Confirm parent and childName are valid. 
+            if (parent == null)
+            {
+                return null;
+            }
+
+            T foundChild = null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                // If the child is not of the request child type child
+                var childType = child as T;
+                if (childType == null)
+                {
+                    // recursively drill down the tree
+                    foundChild = FindChild<T>(child, childName);
+                    // If the child is found, break so we do not overwrite the found child. 
+                    if (foundChild != null)
+                    {
+                        break;
+                    }
+                }
+                else if (!string.IsNullOrEmpty(childName))
+                {
+                    var frameworkElement = child as FrameworkElement;
+                    // If the child's name is set for search
+                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    {
+                        // if the child's name is of the request name
+                        foundChild = (T)child;
+                        break;
+                    }
+                    // Need this in case the element we want is nested
+                    // in another element of the same type
+                    foundChild = FindChild<T>(child, childName);
+                }
+                else
+                {
+                    // child element found.
+                    foundChild = (T)child;
+                    break;
+                }
+            }
+            return foundChild;
+        }
+
     }
 }

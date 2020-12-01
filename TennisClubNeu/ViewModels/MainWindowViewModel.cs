@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.ViewModels
 {
@@ -21,28 +22,24 @@ namespace TennisClubNeu.ViewModels
 
             DateTime Vergleichszeit = AnzeigeStart == null ? Jetzt : (DateTime)AnzeigeStart;
 
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-               
-                List<Buchungen> AlleAktuellenBuchungen = (from Buchungen bu in db.Buchungen where 
-                            bu.Startzeit < Vergleichszeit && bu.Endzeit > Vergleichszeit select bu).ToList();
+                List<Buchungen> AlleAktuellenBuchungen = BuchungenRepository.GetInstance().GetAlleAktuellenBuchungen(Vergleichszeit);
                 foreach (Buchungen buchung in AlleAktuellenBuchungen)
                 {
                     AnzeigePlatzViewModel apvm = new AnzeigePlatzViewModel();
-                    apvm.PlatzId = GetPlatznummer(db, buchung.PlatzId);
-                    
-                    
+                    apvm.PlatzId = PlatzRepository.GetInstance().GetPlatznummer(buchung.PlatzId);
+
                         apvm.Titelzeile = buchung.Titel;
-                        apvm.AnzeigeUhrzeit = GetUhrzeitPlatzFrei(db, buchung);
+                        apvm.AnzeigeUhrzeit = BuchungenRepository.GetInstance().GetUhrzeitPlatzFrei(buchung);
                         apvm.Status = "belegt";
 
                         if (String.IsNullOrEmpty(buchung.FesteBuchungGuid) && String.IsNullOrEmpty(buchung.TurnierspielGuid))
                         {
                             //Platzbuchung eines Spielers
                             apvm.Zeile1 = buchung.Startzeit.ToShortTimeString();
-                            apvm.Zeile2 = Helpers.GetSpielerNameById(db, buchung.Spieler1Id);
-                            apvm.Zeile3 = Helpers.GetSpielerNameById(db, buchung.Spieler2Id); 
-                            apvm.Zeile4 = Helpers.GetSpielerNameById(db, buchung.Spieler3Id); 
-                            apvm.Zeile5 = Helpers.GetSpielerNameById(db, buchung.Spieler4Id);
+                            apvm.Zeile2 = Helpers.GetSpielerNameById(buchung.Spieler1Id);
+                            apvm.Zeile3 = Helpers.GetSpielerNameById(buchung.Spieler2Id); 
+                            apvm.Zeile4 = Helpers.GetSpielerNameById(buchung.Spieler3Id); 
+                            apvm.Zeile5 = Helpers.GetSpielerNameById(buchung.Spieler4Id);
                         }
 
                         if (String.IsNullOrEmpty(buchung.FesteBuchungGuid) && !String.IsNullOrEmpty(buchung.TurnierspielGuid))
@@ -67,35 +64,15 @@ namespace TennisClubNeu.ViewModels
                     
                     Buchungen.Add(apvm);
                 }
-                ListePlatzAnzeige = GetPlatzListe(db, Buchungen);
-            }
+                ListePlatzAnzeige = GetPlatzListe(Buchungen);
         }
 
-        //private string GetSpielerNameById(TennisclubNeuEntities db, int? id) {
-        //    Spieler spieler = (from Spieler s in db.Spieler where s.Id == id select s).FirstOrDefault();
-
-        //    if (spieler == null) {
-        //        return "";
-        //    }                
-        //    return spieler.Nachname + ", " + spieler.Vorname;
-        //}
-
-        private string GetUhrzeitPlatzFrei(TennisclubNeuEntities db, Buchungen buchung) {
-            Buchungen _buchung = (from Buchungen b in db.Buchungen where DbFunctions.TruncateTime(b.Startzeit) == DbFunctions.TruncateTime(buchung.Startzeit) && b.PlatzId == buchung.PlatzId orderby b.Endzeit descending select b).FirstOrDefault();
-            return _buchung.Endzeit.ToShortTimeString();
-        }
-
-        private int GetPlatznummer(TennisclubNeuEntities db, int PlatzId)
-        {
-            return (from Plätze p in db.Plätze where p.Id == PlatzId select p.Platznummer).FirstOrDefault();
-        }
-
-        private List<AnzeigePlatzViewModel> GetPlatzListe(TennisclubNeuEntities db, List<AnzeigePlatzViewModel> buchungen)
+        private List<AnzeigePlatzViewModel> GetPlatzListe(List<AnzeigePlatzViewModel> buchungen)
         {
             int[] Platzsperren;
-            Platzsperren = (from Platzsperre ps in db.Platzsperre select ps.PlatzId).ToArray();
+            Platzsperren = PlatzRepository.GetInstance().GetPlatzsperren(); ;
             List<AnzeigePlatzViewModel> ReturnList = new List<AnzeigePlatzViewModel>();
-            List<Plätze> AllePlätze =  (from Plätze p in db.Plätze orderby p.Id ascending select p).ToList();
+            List<Plätze> AllePlätze =  PlatzRepository.GetInstance().GetPlätze();
             foreach (Plätze platz in AllePlätze)
             {
                 if (Platzsperren.Contains(platz.Id))
@@ -135,7 +112,7 @@ namespace TennisClubNeu.ViewModels
                         vm.Zeile4 = "";
                         vm.Zeile5 = "";
                         //Achtung, es kann sein, dass der Platz innerhalb der nächsten Stunde belegt wird
-                        Buchungen buchung = (from Buchungen b in db.Buchungen where b.PlatzId == platz.Id && b.Startzeit > DateTime.Now orderby b.Startzeit ascending select b).FirstOrDefault();
+                        Buchungen buchung = BuchungenRepository.GetInstance().GetBuchungByPlatzUndStartzeit(platz.Id);
                         if (buchung != null) {
                             TimeSpan test = buchung.Startzeit - DateTime.Now;
                             if (test.Hours == 0) {

@@ -9,6 +9,7 @@ using TennisclubNeu;
 using TennisClubNeu.UserControls;
 using TennisClubNeu.UserControls.Admin;
 using TennisClubNeu.UserControls.Platzbuchung;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu
 {
@@ -47,16 +48,13 @@ namespace TennisClubNeu
         }
 
         private void ZeichneMainGrid() {
-            Helpers.ClearSpielerIstGebucht();
+            SpielerRepository.GetInstance().ClearSpielerIstGebucht();
             MainWindowPlatzAnzeigeViewModel model = new MainWindowPlatzAnzeigeViewModel(null);
             //Plätze einlesen, Singleton, ändert sich zur Laufzeit nicht 
             sgtPlätze = SgtPlätze.Instance.Plätze;
             
             //Mit der Anzahl der Plätze das Template mit seinen Rows und Columns ermitteln
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
-            {
-                //In der Tabelle ist ein Fehler, die Anzahl heisst da PlatzId
-                GridInfo info = (from GridInfo gi in db.GridInfo where gi.PlatzId == sgtPlätze.Count select gi).FirstOrDefault();
+                GridInfo info = PlatzRepository.GetInstance().GetGridInfo(sgtPlätze.Count);
                 grdMain.Children.Clear();
                 grdMain = Helpers.GetMainGrid(info);
                 string[] arrayCol = info.PositionsColumn.Split(';');
@@ -88,7 +86,7 @@ namespace TennisClubNeu
                     Grid.SetColumn(ap, Int32.Parse(arrayCol[i]));
                     grdMain.Children.Add(ap);
                 }
-            }
+            
         }
 
         #region Timers

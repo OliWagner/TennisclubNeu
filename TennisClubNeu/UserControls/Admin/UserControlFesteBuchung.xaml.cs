@@ -85,6 +85,7 @@ namespace TennisClubNeu.UserControls.Admin
             buchungenToCheck = BaueBuchungen();
             string fehler = "";
             bool returner = FesteBuchungRepository.GetInstance().CheckBuchungen(buchungenToCheck, tbGuid.Text, out fehler);
+            tblWarnings.Text = fehler;
             return returner;
         }
 
@@ -99,7 +100,7 @@ namespace TennisClubNeu.UserControls.Admin
             List<int> _plaetze = new List<int>();
             foreach (Plätze platz in ListPlätze)
             {
-                CheckBox checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer.ToString());
+                CheckBox checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer.ToString());
                 if ((bool)checkBox.IsChecked) {
                     _plaetze.Add(platz.Platznummer);
                 }
@@ -170,7 +171,7 @@ namespace TennisClubNeu.UserControls.Admin
             List<int> ids = new List<int>();
             foreach (Plätze platz in ListPlätze)
             {
-                var checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer);
+                var checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + platz.Platznummer);
                 if ((bool)checkBox.IsChecked) {
                     ids.Add(platz.Platznummer);
                 }
@@ -242,7 +243,7 @@ namespace TennisClubNeu.UserControls.Admin
 
             foreach (Plätze p in ListPlätze)
             {
-                CheckBox checkBox = FindChild<CheckBox>(grdMain, "chkPlatz" + p.Platznummer.ToString());
+                CheckBox checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz" + p.Platznummer.ToString());
 
                 checkBox.IsChecked = false;
             }
@@ -278,75 +279,72 @@ namespace TennisClubNeu.UserControls.Admin
             string[] platzNummern = azdfb.Plätze.Split(';');
             foreach (string  id in platzNummern)
             {
-                var checkBox = FindChild<CheckBox>(grdMain, "chkPlatz"+id);
+                var checkBox = Helpers.FindChild<CheckBox>(grdMain, "chkPlatz"+id);
 
                 checkBox.IsChecked = true;
             }
-
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Buchungen buchung = (from Buchungen bu in db.Buchungen where bu.FesteBuchungGuid.Equals(azdfb.Guid) select bu).FirstOrDefault();
+                Buchungen buchung = FesteBuchungRepository.GetInstance().GetBuchung(azdfb.Guid);
                 tbZeile1.Text = buchung.Zeile1;
                 tbZeile2.Text = buchung.Zeile2;
                 tbZeile3.Text = buchung.Zeile3;
                 tbZeile4.Text = buchung.Zeile4;
                 tbZeile5.Text = buchung.Zeile5;
-            }
         }
 
         #endregion
-        public static T FindChild<T>(DependencyObject parent, string childName)
-        where T : DependencyObject
-        {
-            // Confirm parent and childName are valid. 
-            if (parent == null)
-            {
-                return null;
-            }
+        //public static T FindChild<T>(DependencyObject parent, string childName)
+        //where T : DependencyObject
+        //{
+        //    // Confirm parent and childName are valid. 
+        //    if (parent == null)
+        //    {
+        //        return null;
+        //    }
 
-            T foundChild = null;
+        //    T foundChild = null;
 
-            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
-                // If the child is not of the request child type child
-                var childType = child as T;
-                if (childType == null)
-                {
-                    // recursively drill down the tree
-                    foundChild = FindChild<T>(child, childName);
+        //    int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+        //    for (int i = 0; i < childrenCount; i++)
+        //    {
+        //        DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+        //        // If the child is not of the request child type child
+        //        var childType = child as T;
+        //        if (childType == null)
+        //        {
+        //            // recursively drill down the tree
+        //            foundChild = FindChild<T>(child, childName);
 
-                    // If the child is found, break so we do not overwrite the found child. 
-                    if (foundChild != null)
-                    {
-                        break;
-                    }
-                }
-                else if (!string.IsNullOrEmpty(childName))
-                {
-                    var frameworkElement = child as FrameworkElement;
-                    // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
-                    {
-                        // if the child's name is of the request name
-                        foundChild = (T)child;
-                        break;
-                    }
+        //            // If the child is found, break so we do not overwrite the found child. 
+        //            if (foundChild != null)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        else if (!string.IsNullOrEmpty(childName))
+        //        {
+        //            var frameworkElement = child as FrameworkElement;
+        //            // If the child's name is set for search
+        //            if (frameworkElement != null && frameworkElement.Name == childName)
+        //            {
+        //                // if the child's name is of the request name
+        //                foundChild = (T)child;
+        //                break;
+        //            }
 
-                    // Need this in case the element we want is nested
-                    // in another element of the same type
-                    foundChild = FindChild<T>(child, childName);
-                }
-                else
-                {
-                    // child element found.
-                    foundChild = (T)child;
-                    break;
-                }
-            }
+        //            // Need this in case the element we want is nested
+        //            // in another element of the same type
+        //            foundChild = FindChild<T>(child, childName);
+        //        }
+        //        else
+        //        {
+        //            // child element found.
+        //            foundChild = (T)child;
+        //            break;
+        //        }
+        //    }
 
-            return foundChild;
-        }
+        //    return foundChild;
+        //}
 
         private void GrdMain_Changed(object sender, RoutedEventArgs e)
         {

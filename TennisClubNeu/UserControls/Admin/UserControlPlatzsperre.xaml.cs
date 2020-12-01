@@ -45,7 +45,7 @@ namespace TennisClubNeu.UserControls.Admin
 
 
 
-            int[] plId = PlatzsperreRepository.GetInstance().GetPlatzsperren(); ;
+            int[] plId = PlatzRepository.GetInstance().GetPlatzsperren(); ;
 
                 foreach (Plätze item in sgtPlätze)
                 {
@@ -89,7 +89,7 @@ namespace TennisClubNeu.UserControls.Admin
                         }
                     }
                 }
-            PlatzsperreRepository.GetInstance().Save(sperren);    
+            PlatzRepository.GetInstance().SavePlatzsperre(sperren);    
         }
     }
 }

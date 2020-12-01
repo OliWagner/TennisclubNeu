@@ -104,7 +104,14 @@ namespace TennisClubNeu.Repositories
 
         }
 
-
+        public Buchungen GetBuchung(string azdfbGuid)
+        {
+            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
+            {
+                Buchungen buchung = (from Buchungen bu in db.Buchungen where bu.TurnierspielGuid.Equals(azdfbGuid) select bu).FirstOrDefault();
+                return buchung;
+            }
+        }
 
 
 

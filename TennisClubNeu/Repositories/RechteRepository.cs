@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TennisClubNeu.Classes;
 
 namespace TennisClubNeu.Repositories
 {
@@ -44,6 +45,26 @@ namespace TennisClubNeu.Repositories
             }
         }
 
+        public Rechte GetRechteFuerAnmeldung(string anmeldeId) {
+            Rechte rechte = new Rechte();
+            using (TennisclubNeuEntities db = new TennisclubNeuEntities())
+            {
 
+                Spieler spieler = (from Spieler sp in db.Spieler where sp.ChipId.Equals(anmeldeId) select sp).FirstOrDefault();
+                if (spieler == null)
+                {
+                    return null;
+                }
+                rechte.Name = spieler.Vorname + " " + spieler.Nachname;
+                rechte.Id = spieler.Id;
+                rechte.IsAdminBuchungen = spieler.IstAdminBuchungen;
+                rechte.IsAdminFesteBuchungen = spieler.IstAdminFesteBuchungen;
+                rechte.IsAdminTurnierspiele = spieler.IstAdminTurniere;
+                rechte.IsAdminPlatzsperre = spieler.IstAdminPlatzsperre;
+                rechte.IsAdminRechte = spieler.IstAdminRechte;
+                rechte.IsAdminSpieler = spieler.IstAdminSpieler;
+                return rechte;
+            }
+        }
     }
 }

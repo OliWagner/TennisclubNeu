@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using TennisClubNeu.Classes;
+using TennisClubNeu.Repositories;
 
 namespace TennisClubNeu.UserControls.Platzbuchung
 {
@@ -22,17 +23,17 @@ namespace TennisClubNeu.UserControls.Platzbuchung
         public void ZeichneGrid(Buchungen buchung) {
             Buchung = buchung;
             lblPlatzUhrzeit.Content = "Platz " + buchung.PlatzId + " um " + buchung.Startzeit.ToShortTimeString();
-            lblSpieler1.Content = Helpers.GetSpielerNameById(new TennisclubNeuEntities(), buchung.Spieler1Id);
-            lblSpieler2.Content = Helpers.GetSpielerNameById(new TennisclubNeuEntities(), buchung.Spieler2Id);
-            lblSpieler3.Content = Helpers.GetSpielerNameById(new TennisclubNeuEntities(), buchung.Spieler3Id);
-            lblSpieler4.Content = Helpers.GetSpielerNameById(new TennisclubNeuEntities(), buchung.Spieler4Id);
+            lblSpieler1.Content = Helpers.GetSpielerNameById(buchung.Spieler1Id);
+            lblSpieler2.Content = Helpers.GetSpielerNameById(buchung.Spieler2Id);
+            lblSpieler3.Content = Helpers.GetSpielerNameById(buchung.Spieler3Id);
+            lblSpieler4.Content = Helpers.GetSpielerNameById(buchung.Spieler4Id);
 
         }
 
         private void BtnLoeschen_Click(object sender, RoutedEventArgs e)
         {
-            using (TennisclubNeuEntities db = new TennisclubNeuEntities()) {
-                Buchungen _buchung = (from Buchungen bu in db.Buchungen where bu.Id == Buchung.Id select bu).FirstOrDefault();
+                Buchungen _buchung = BuchungenRepository.GetInstance().GetBuchungById(Buchung.Id);
+
                 if (_buchung != null) {
                     Helpers.SetzeSpielerIstGebucht((int)_buchung.Spieler1Id, false);
                     Helpers.SetzeSpielerIstGebucht((int)_buchung.Spieler2Id, false);
@@ -43,12 +44,8 @@ namespace TennisClubNeu.UserControls.Platzbuchung
                     {
                         Helpers.SetzeSpielerIstGebucht((int)_buchung.Spieler4Id, false);
                     }
-
-
-                    db.Buchungen.Remove(_buchung);
-                    db.SaveChanges();
+                    BuchungenRepository.GetInstance().RemoveBuchung(_buchung.Id);
                 }
-            }
         }
 
         private void BtnBestaetigen_Click(object sender, RoutedEventArgs e)

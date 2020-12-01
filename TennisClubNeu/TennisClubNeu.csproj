@@ -122,9 +122,10 @@
     <Compile Include="Plätze.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Repositories\BuchungenRepository.cs" />
     <Compile Include="Repositories\FesteBuchungRepository.cs" />
     <Compile Include="Repositories\AdminBuchungRepository.cs" />
-    <Compile Include="Repositories\PlatzsperreRepository.cs" />
+    <Compile Include="Repositories\PlatzRepository.cs" />
     <Compile Include="Repositories\RechteRepository.cs" />
     <Compile Include="Repositories\SpielerRepository.cs" />
     <Compile Include="Repositories\TurnierspieleRepository.cs" />

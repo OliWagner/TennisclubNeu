@@ -2,7 +2,7 @@
 
 namespace TennisClubNeu.Classes
 {
-    class AnzeigeDatenTurnierspiel
+    public class AnzeigeDatenTurnierspiel
     {
         public int Id { get; set; }
         public string Guid { get; set; }
